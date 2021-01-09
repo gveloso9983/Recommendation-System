@@ -1,3 +1,5 @@
+#Content Based
+
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
@@ -27,7 +29,7 @@ features = ["tagValue"] # Select features to take in acount
 
 ##Step 3: Create a column in DF which combines all selected features
 
-# for feature in features:
+# # for feature in features:
 # 	df[feature] = df[feature].fillna('') #fills NaN with ''
 
 def combined_features(row):
@@ -35,7 +37,9 @@ def combined_features(row):
 		return row["tagValue"]
 	except:
 		print( "Error:" , row)
+
 df["combined_features"] = df.apply(combined_features, axis=1) #axis=1 passes as rows and not columns
+
 
 print("Combined features \n", df["combined_features"].head())
 
@@ -46,6 +50,7 @@ cv = CountVectorizer()
 #counts the frequecny of the words
 count_matrix = cv.fit_transform(df["combined_features"])
 
+
 ##Step 5: Compute the Cosine Similarity based on the count_matrix
 
 #calculates similarity between points
@@ -53,7 +58,7 @@ sim_scores = cosine_similarity(count_matrix)
 
 print(sim_scores)
 
-artist_user_likes = "Hocico"
+artist_user_likes = "Nine Inch Nails"
 
 ## Step 6: Get id of this artist from its title
 
@@ -74,5 +79,5 @@ i= 0
 for artist in sorted_similar_artists:
 	print (get_title_from_index(artist[0]))
 	i = i+1
-	if i >50:
+	if i >10:
 		break
