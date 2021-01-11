@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from time import sleep
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -9,18 +10,118 @@ def get_title_from_index(index):
 
 def get_index_from_title(title):
 	return df[df.title == title]["index"].values[0]
+
+def combine_features(row):
+    try:
+        return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
+    except:
+        print( "Error:" , row)
 ##################################################
 
+###### Interface functions #######
+#Welcome message
+def welcome():
+    print('##########################################')
+    print('#          Movies Recomendation          #')
+    print('##########################################')
+    print('#           Welcome to the best          #')
+    print('#    recomendation platform ever made!   #')
+    print('##########################################')
+    input('#              Press Enter to continue...')
+    print('\n \n')
+
+#Login
+def login():
+    print('##########################################')
+    print('#                  Login                 #')
+    print('##########################################')
+    input('# Insert an userId please: ')
+    print('\n \n')
+
+#Menu
+def menu():
+    print('##########################################')
+    print('#                  Menu                  #')
+    print('##########################################')
+    print('# 0 - Top 10 movies                      #')
+    print('# 1 - Content based                      #')
+    print('# 2 - Movies you like                    #')
+    print('# 3 - Colaborative based                 #')
+    print('# 4 - ???                                #')
+    print('# 5 - Logout                             #')
+    print('# Other - Close                          #')
+    option = int(input('# Please select one option: '))
+    print('\n \n')
+    return option
+
+#Features menu
+def features_menu():
+    print('##########################################')
+    print('#                Features                #')
+    print('##########################################')
+    print('# 0 - Keywords                           #')
+    print('# 1 - Cast                               #')
+    print('# 2 - Genres                             #')
+    print('# 3 - Director                           #')
+    print('# Other - Close                          #')
+    option = int(input('# Please select one option: '))
+    print('\n \n')
+    return option
+##################################################
+###### APP functionalities #######
+#Create top10
+def top10():
+    no_dups =df.drop_duplicates("title", keep="first")
+    df_sorted = no_dups.sort_values("vote_average", ignore_index=True, ascending = False)
+    print("Top 10 movies: ")
+    print(df_sorted[["title","vote_average"]].head(10))
+    print('\n \n')
+    sleep(5)
+    return True
+
+#Content Based Filltering
+def content_based():
+    print('content_based')
+    #Select Features
+    #features = ["keywords","cast","genres","director"] # Select features to take in acount
+    feature_selected = features_menu()
+    print(feature_selected)
+    return True
+
+def movie_likes():
+    print('movies_likes')
+    return True
+
+def colaborative_based():
+    print('colaborative_based')
+    return True
+
+def logout():
+    print('logout')
+    return True
+
+def close():
+    return False
+##################################################
 #Read CSV File
 df = pd.read_csv("tentaEste.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
-#Create top 10
-#no_dups =df.drop_duplicates("title", keep="first")
-# df_sorted = no_dups.sort_values("vote_average", ignore_index=True, ascending = False)
-# print("Top 10 movies: ")
-# print(df_sorted[["title","vote_average"]].head(10))
 
-
+welcome()
+login()
+options = { 
+    0: top10,
+    1: content_based,
+    2: movie_likes,
+    3: colaborative_based,
+    4: welcome,
+    5: logout,
+}
+flag = True
+while flag:
+    option = menu()
+    func = options.get(option, close)
+    flag = func()
 
 #Content Based Filltering
 #Select Features
