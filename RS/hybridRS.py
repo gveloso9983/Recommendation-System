@@ -64,14 +64,14 @@ def features_menu():
     print('# 2 - Genres                             #')
     print('# 3 - Director                           #')
     print('# Other - Close                          #')
-    option = int(input('# Please select one option: '))
+    option = input('# Please select the features you want (just type the numbers and Enter): ')
     print('\n \n')
     return option
 ##################################################
 ###### APP functionalities #######
 #Create top10
 def top10():
-    no_dups =df.drop_duplicates("title", keep="first")
+    no_dups = df.drop_duplicates("title", keep="first")
     df_sorted = no_dups.sort_values("vote_average", ignore_index=True, ascending = False)
     print("Top 10 movies: ")
     print(df_sorted[["title","vote_average"]].head(10))
@@ -83,9 +83,13 @@ def top10():
 def content_based():
     print('content_based')
     #Select Features
-    #features = ["keywords","cast","genres","director"] # Select features to take in acount
-    feature_selected = features_menu()
-    print(feature_selected)
+    features = ["keywords","cast","genres","director"] # Select features to take in acount
+    features_selected_int = features_menu()
+    features_selected_str = []
+    for f in features_selected_int:
+        features_selected_str.append(features[int(f)])
+    for feature in features_selected_str:
+        df[feature] = df[feature].fillna('') #fills NaN with ''
     return True
 
 def movie_likes():
