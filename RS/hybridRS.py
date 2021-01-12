@@ -16,6 +16,11 @@ def combine_features(row):
         return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
     except:
         print( "Error:" , row)
+
+def get_similar_movies(movie_name, user_rating):
+    similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
+    similar_score = similar_score.sort_values(ascending=False)
+    return similar_score
 ##################################################
 
 ###### Interface functions #######
@@ -47,7 +52,7 @@ def menu():
     print('# 1 - Content based                      #')
     print('# 2 - Movies you like                    #')
     print('# 3 - Colaborative based                 #')
-    print('# 4 - ???                                #')
+    print('# 4 - Similarity Matrix                  #')
     print('# 5 - Logout                             #')
     print('# Other - Close                          #')
     option = int(input('# Please select one option: '))
@@ -68,6 +73,7 @@ def features_menu():
     print('\n \n')
     return option
 ##################################################
+
 ###### APP functionalities #######
 #Create top10
 def top10():
@@ -96,8 +102,19 @@ def movie_likes():
     print('movies_likes')
     return True
 
+#Collaborative Based
 def colaborative_based():
     print('colaborative_based')
+    user_ratings = cf.pivot_table(index=['userId'],columns=['title'], values='rating')
+    #Remove movies who have less than 20 users who rated it
+    user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
+    print(user_ratings.head())
+    item_similarity_df = user_ratings.corr(method='pearson')
+    action_lover = [("Up",4), ("Interstellar",4), ("Guardians of the Galaxy",3)]
+    similar_movies = pd.DataFrame()
+    for movie,rating in action_lover:
+            similar_movies = similar_movies.append(get_similar_movies(movie, rating), ignore_index=True)
+    print(similar_movies.sum().sort_values(ascending=False))
     return True
 
 def logout():
@@ -118,7 +135,7 @@ options = {
     1: content_based,
     2: movie_likes,
     3: colaborative_based,
-    4: welcome,
+    4: similarity_matrix,
     5: logout,
 }
 flag = True
@@ -187,33 +204,3 @@ while flag:
 # 	i = i+1
 # 	if i >10:
 # 		break
-
-#Collaborative Based
-
-user_ratings =  cf.pivot_table(index=['userId'],columns=['title'], values='rating')
-
-
-#Remove movies who have less than 20 users who rated it
-user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
-
-#print(user_ratings.head())
-
-#Similarity Matrix
-item_similarity_df = user_ratings.corr(method='pearson')
-
-def get_similar_movies(movie_name, user_rating):
-    similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
-    similar_score = similar_score.sort_values(ascending=False)
-
-    return similar_score
-
-action_lover = [("Up",4), 
-                ("Interstellar",4), 
-                ("Guardians of the Galaxy",3)]
-
-similar_movies = pd.DataFrame()
-
-for movie,rating in action_lover:
-        similar_movies = similar_movies.append(get_similar_movies(movie, rating), ignore_index=True)
-
-print(similar_movies.sum().sort_values(ascending=False))
