@@ -100,6 +100,33 @@ def content_based():
 
 def movie_likes():
     print('movies_likes')
+    print("Combined features \n", df["combined_features"].head())
+    ##Step 4: Create count matrix from this new combined column
+    cv = CountVectorizer()
+    #counts the frequecy of the words
+    count_matrix = cv.fit_transform(df["combined_features"])
+    ##Step 5: Compute the Cosine Similarity based on the count_matrix
+    #calculates similarity between points
+    sim_scores = cosine_similarity(count_matrix)
+    print(sim_scores)
+    likes = input("What movie do you like?")
+    movie_user_likes = "Pulp Fiction"
+    ## Step 6: Get id of this artist from its title
+    movie_index = get_index_from_title(movie_user_likes)
+    # Find Similar artists
+    # Converts matrix into a list and gives us inside a set of tuples
+    similar_movies = list(enumerate(sim_scores[movie_index]))
+    ## Step 7: Get a list of similar artists in descending order of similarity score
+    # Sort similar
+    sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
+    ## Step 8: Print titles of first 50 artists
+    print("Recommended movies: \n")
+    i= 0
+    for movie in sorted_similar_movies:
+    	print (get_title_from_index(movie[0]))
+        i = i+1
+        if i >10:
+	        break
     return True
 
 #Collaborative Based
@@ -110,6 +137,7 @@ def colaborative_based():
     user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
     print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
+    #Add user input
     action_lover = [("Up",4), ("Interstellar",4), ("Guardians of the Galaxy",3)]
     similar_movies = pd.DataFrame()
     for movie,rating in action_lover:
@@ -135,7 +163,7 @@ options = {
     1: content_based,
     2: movie_likes,
     3: colaborative_based,
-    4: similarity_matrix,
+    4: welcome,
     5: logout,
 }
 flag = True
@@ -143,64 +171,3 @@ while flag:
     option = menu()
     func = options.get(option, close)
     flag = func()
-
-#Content Based Filltering
-#Select Features
-# features = ["keywords","cast","genres","director"] # Select features to take in acount
-
-# ##Step 3: Create a column in DF which combines all selected features
-
-# for feature in features:
-# 	df[feature] = df[feature].fillna('') #fills NaN with ''
-
-# def combine_features(row):
-# 	try:
-# 		return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
-# 	except:
-# 		print( "Error:" , row)
-
-# df["combined_features"] = df.apply(combine_features, axis=1) #axis=1 passes as rows and not columns
-
-
-# print("Combined features \n", df["combined_features"].head())
-
-
-# ##Step 4: Create count matrix from this new combined column
-
-# cv = CountVectorizer()
-# #counts the frequecy of the words
-# count_matrix = cv.fit_transform(df["combined_features"])
-
-
-# ##Step 5: Compute the Cosine Similarity based on the count_matrix
-
-# #calculates similarity between points
-# sim_scores = cosine_similarity(count_matrix)
-
-# print(sim_scores)
-
-# #likes = input("What movie do you like?")
-
-# movie_user_likes = "Pulp Fiction"
-
-# ## Step 6: Get id of this artist from its title
-
-# movie_index = get_index_from_title(movie_user_likes)
-
-# # Find Similar artists
-# # Converts matrix into a list and gives us inside a set of tuples
-# similar_movies = list(enumerate(sim_scores[movie_index]))
-
-# ## Step 7: Get a list of similar artists in descending order of similarity score
-
-# # Sort similar
-# sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
-
-# ## Step 8: Print titles of first 50 artists
-# print("Recommended movies: \n")
-# i= 0
-# for movie in sorted_similar_movies:
-# 	print (get_title_from_index(movie[0]))
-# 	i = i+1
-# 	if i >10:
-# 		break
