@@ -11,8 +11,6 @@ def get_title_from_index(index):
 def get_index_from_title(title):
 	return df[df.title == title]["index"].values[0]
 
-
-
 ##################################################
 
 ###### Interface functions #######
@@ -32,8 +30,9 @@ def login():
     print('##########################################')
     print('#                  Login                 #')
     print('##########################################')
-    input('# Insert an userId please: ')
+    id = int(input('# Insert an userId please: '))
     print('\n \n')
+    return id
 
 #Menu
 def menu():
@@ -46,7 +45,7 @@ def menu():
     print('# 3 - Colaborative based                 #') # recommendation based on your likings
     print('# 4 - Welcome                            #') # Adicionar rating
     print('# 5 - Logout                             #')
-    print('# Other - Close                          #')
+    print('# 6 - Close                              #')
     option = int(input('# Please select one option: '))
     print('\n \n')
     return option
@@ -137,6 +136,11 @@ def colaborative_based():
     item_similarity_df = user_ratings.corr(method='pearson')
     #TODO Change to user input
     # Lookup do user id
+    rows = cf.loc['title', cf['userId'] == userId]
+    print('######################## USER ID ROWS ')
+    print(userId)
+    print(rows)
+    print('######################################')
     # Guardar os dados do titulo e do rating num tuple
     # Guardar o tuple num array
     #Pedir ao user um input ("Title", rating) x3
@@ -165,7 +169,7 @@ df = pd.read_csv("tentaEste.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
 
 welcome()
-login()
+userId = login()
 options = { 
     0: top10,
     1: content_based,
