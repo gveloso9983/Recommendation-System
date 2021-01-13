@@ -85,6 +85,8 @@ def movie_likes():
     print("Cosine Similarity : \n")
     print(sim_scores)
     print("\n")
+    titles = cf['title'].tolist()
+    print(titles)
     movie_user_likes = "Pulp Fiction"
     ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
