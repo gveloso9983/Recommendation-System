@@ -81,7 +81,7 @@ def movie_likes():
     
     df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
 
-    print("Combined features \n ", df["combined_features"].head())
+    #print("Combined features \n ", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
     #counts the frequecy of the words
@@ -89,9 +89,9 @@ def movie_likes():
     ##Step 5: Compute the Cosine Similarity based on the count_matrix
     #calculates similarity between points
     sim_scores = cosine_similarity(count_matrix)
-    print("Cosine Similarity : \n")
-    print(sim_scores)
-    print("\n")
+    # print("Cosine Similarity : \n")
+    # print(sim_scores)
+    # print("\n")
     movie_user_likes = "Pulp Fiction"
     ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
@@ -119,6 +119,7 @@ def colaborative_based():
     user_ratings = cf.pivot_table(index=['userId'],columns=['title'], values='rating')
     #Remove movies who have less than 20 users who rated it | Fills NaN with 0
     user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
+    #print("Pivoted table")
     #print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
     #print(item_similarity_df)
