@@ -11,11 +11,8 @@ def get_title_from_index(index):
 def get_index_from_title(title):
 	return df[df.title == title]["index"].values[0]
 
-
 def get_director_from_title(title):
 	return df[df.title == title]["director"].values[0]
-
-
 ##################################################
 
 ###### Interface functions #######
@@ -35,8 +32,9 @@ def login():
     print('##########################################')
     print('#                  Login                 #')
     print('##########################################')
-    input('# Insert an userId please: ')
+    id = int(input('# Insert an userId please: '))
     print('\n \n')
+    return id
 
 #Menu
 def menu():
@@ -48,7 +46,7 @@ def menu():
     print('# 2 - Colaborative based                 #') # recommendation based on your likings
     print('# 3 - Welcome                            #') # Adicionar rating
     print('# 4 - Logout                             #')
-    print('# 5 - Close                          #')
+    print('# 5 - Close                              #')
     option = int(input('# Please select one option: '))
     print('\n \n')
     return option
@@ -67,12 +65,7 @@ def top10():
 def movie_likes():
     
     print('movies_likes')
-    features = ["keywords","cast","genres","director"] # Select features to take in acount
     
-    for feature in features:
-        df[feature] = df[feature].fillna('') #fills NaN with ''
-    
-
     def combine_features(row):
         try:
             return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
@@ -89,10 +82,21 @@ def movie_likes():
     ##Step 5: Compute the Cosine Similarity based on the count_matrix
     #calculates similarity between points
     sim_scores = cosine_similarity(count_matrix)
-    # print("Cosine Similarity : \n")
-    # print(sim_scores)
-    # print("\n")
-    movie_user_likes = "Pulp Fiction"
+    #print("Cosine Similarity : \n")
+    #print(sim_scores)
+    #print("\n")
+    titles = sorted(cf['title'].unique().tolist())
+    print('##########################################')
+    print('#        Select what film you like       #')
+    print('##########################################')
+    i = 0
+    for t in titles:
+        print('# ' + repr(i) + ' - ' + t)
+        i += 1
+    print('##########################################')
+
+    movie_user_likes_index = int(input('# Select the movie index:'))
+    movie_user_likes = titles[movie_user_likes_index]
     ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
     movie_director = get_director_from_title(movie_user_likes)
@@ -117,18 +121,20 @@ def movie_likes():
 def colaborative_based():
     print('colaborative_based')
     user_ratings = cf.pivot_table(index=['userId'],columns=['title'], values='rating')
-    #Remove movies who have less than 20 users who rated it | Fills NaN with 0
+    #Remove movies who have less than 20 users who rated it
     user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
     #print("Pivoted table")
     #print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
-    #print(item_similarity_df)
-    #TODO Change to user input
-    # Lookup do user id
-    # Guardar os dados do titulo e do rating num tuple
-    # Guardar o tuple num array
-    #Pedir ao user um input ("Title", rating) x3
-    action_lover = [("Up",4), ("Interstellar",4), ("Guardians of the Galaxy",3)]
+
+    rows = cf.loc[cf['userId'] == userId]
+
+    action_lover = [tuple(l) for l in rows[['title', 'rating']].values.tolist()]
+
+    out_tup = [i for i in action_lover if i[0] in user_ratings]
+
+    action_lover = out_tup
+
     
     def get_similar_movies(movie_name, user_rating):
         similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
@@ -153,7 +159,7 @@ df = pd.read_csv("tentaEste.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
 
 welcome()
-login()
+userId = login()
 options = { 
     0: top10,
     1: movie_likes,
