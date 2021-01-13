@@ -3,13 +3,19 @@ import numpy as np
 from time import sleep
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import mean_squared_error
+
+#Read CSV File
+#df = pd.read_csv("movies_and_ratings_small_dataset.csv")
+cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
+df = cf.drop_duplicates(subset = ["title"], keep = 'first', ignore_index = True)
 
 ###### helper functions. Use them when needed #######
 def get_title_from_index(index):
 	return df[df.index == index]["title"].values[0]
 
 def get_index_from_title(title):
-	return df[df.title == title]["index"].values[0]
+	return df[df.title == title].index[0]
 
 def get_director_from_title(title):
 	return df[df.title == title]["director"].values[0]
@@ -44,9 +50,8 @@ def menu():
     print('# 0 - Top 10 movies                      #')
     print('# 1 - Content based                      #') # recommendatin based on a movie
     print('# 2 - Colaborative based                 #') # recommendation based on your likings
-    print('# 3 - Welcome                            #') # Adicionar rating
-    print('# 4 - Logout                             #')
-    print('# 5 - Close                              #')
+    print('# 3 - Logout                             #')
+    print('# 4 - Close                              #')
     option = int(input('# Please select one option: '))
     print('\n \n')
     return option
@@ -65,6 +70,10 @@ def top10():
 def movie_likes():
     
     print('movies_likes')
+
+    features = ["keywords", "cast", "genres", "director"]
+    for feature in features:
+        df[feature] = df[feature].fillna('')
     
     def combine_features(row):
         try:
@@ -73,7 +82,7 @@ def movie_likes():
             print( "Error:" , row)
     
     df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
-
+    print(df["combined_features"].head())
     #print("Combined features \n ", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
@@ -95,7 +104,7 @@ def movie_likes():
         i += 1
     print('##########################################')
 
-    movie_user_likes_index = int(input('# Select the movie index:'))
+    movie_user_likes_index = int(input('# Select the movie index: '))
     movie_user_likes = titles[movie_user_likes_index]
     ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
@@ -106,6 +115,7 @@ def movie_likes():
     similar_movies = list(enumerate(sim_scores[movie_index]))
     ## Step 7: Get a list of similar movies in descending order of similarity score
     # Sort similar
+    print(sim_scores[movie_index])
     sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
     ## Step 8: Print titles of first 50 artists
     print("Recommended movies: \n")
@@ -154,9 +164,9 @@ def logout():
 def close():
     return False
 ##################################################
-#Read CSV File
-df = pd.read_csv("tentaEste.csv")
-cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
+
+#ratings_train = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
+#ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
 
 welcome()
 userId = login()
@@ -164,11 +174,13 @@ options = {
     0: top10,
     1: movie_likes,
     2: colaborative_based,
-    3: welcome,
-    4: logout,
+    3: logout,
 }
 flag = True
 while flag:
     option = menu()
-    func = options.get(option, close)
-    flag = func()
+    if option == 3:
+        userId = login()
+    else:
+        func = options.get(option, close)
+        flag = func()
