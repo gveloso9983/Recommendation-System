@@ -165,8 +165,8 @@ def close():
     return False
 ##################################################
 
-ratings_train = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
-ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
+#ratings_train = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
+#ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
 
 welcome()
 userId = login()
