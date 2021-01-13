@@ -115,15 +115,10 @@ def colaborative_based():
     #TODO Change to user input
     # Lookup do user id
     rows = cf.loc[cf['userId'] == userId]
-    print('######################## USER ID ROWS ')
-    print(userId)
-    print(rows)
-    print('######################################')
-    # Guardar os dados do titulo e do rating num tuple
-    # Guardar o tuple num array
-    #Pedir ao user um input ("Title", rating) x3
-    action_lover = [("Up",4), ("Interstellar",4), ("Guardians of the Galaxy",3)]
+
+    action_lover = [tuple(l) for l in rows[['title', 'rating']].values.tolist()]
     
+    print(action_lover)
     def get_similar_movies(movie_name, user_rating):
         similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
         similar_score = similar_score.sort_values(ascending=False)
