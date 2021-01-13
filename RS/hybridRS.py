@@ -11,16 +11,8 @@ def get_title_from_index(index):
 def get_index_from_title(title):
 	return df[df.title == title]["index"].values[0]
 
-def combine_features(row):
-    try:
-        return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
-    except:
-        print( "Error:" , row)
 
-def get_similar_movies(movie_name, user_rating):
-    similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
-    similar_score = similar_score.sort_values(ascending=False)
-    return similar_score
+
 ##################################################
 
 ###### Interface functions #######
@@ -49,10 +41,10 @@ def menu():
     print('#                  Menu                  #')
     print('##########################################')
     print('# 0 - Top 10 movies                      #')
-    print('# 1 - Content based                      #')
-    print('# 2 - Movies you like                    #')
-    print('# 3 - Colaborative based                 #')
-    print('# 4 - Welcome                            #')
+    print('# 1 - Content based                      #') # recommendatin based on a movie
+    print('# 2 - Movies you like                    #') #n sei se e necessario
+    print('# 3 - Colaborative based                 #') # recommendation based on your likings
+    print('# 4 - Welcome                            #') # Adicionar rating
     print('# 5 - Logout                             #')
     print('# Other - Close                          #')
     option = int(input('# Please select one option: '))
@@ -100,6 +92,13 @@ def content_based():
 
 def movie_likes():
     print('movies_likes')
+    
+    def combine_features(row):
+        try:
+            return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
+        except:
+            print( "Error:" , row)
+    
     print("Combined features \n", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
@@ -109,14 +108,13 @@ def movie_likes():
     #calculates similarity between points
     sim_scores = cosine_similarity(count_matrix)
     print(sim_scores)
-    likes = input("What movie do you like?")
     movie_user_likes = "Pulp Fiction"
-    ## Step 6: Get id of this artist from its title
+    ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
-    # Find Similar artists
+    # Find Similar movies
     # Converts matrix into a list and gives us inside a set of tuples
     similar_movies = list(enumerate(sim_scores[movie_index]))
-    ## Step 7: Get a list of similar artists in descending order of similarity score
+    ## Step 7: Get a list of similar movies in descending order of similarity score
     # Sort similar
     sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
     ## Step 8: Print titles of first 50 artists
@@ -138,11 +136,21 @@ def colaborative_based():
     print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
     #TODO Change to user input
+    # Lookup do user id
+    # Guardar os dados do titulo e do rating num tuple
+    # Guardar o tuple num array
+    #Pedir ao user um input ("Title", rating) x3
     action_lover = [("Up",4), ("Interstellar",4), ("Guardians of the Galaxy",3)]
+    
+    def get_similar_movies(movie_name, user_rating):
+        similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
+        similar_score = similar_score.sort_values(ascending=False)
+        return similar_score
+    
     similar_movies = pd.DataFrame()
     for movie,rating in action_lover:
             similar_movies = similar_movies.append(get_similar_movies(movie, rating), ignore_index=True)
-    print(similar_movies.sum().sort_values(ascending=False))
+    print(similar_movies.sum().sort_values(ascending=False).head(10))
     return True
 
 def logout():
