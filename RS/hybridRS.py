@@ -114,12 +114,15 @@ def colaborative_based():
     user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
     print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
-    #TODO Change to user input
-    # Lookup do user id
+
     rows = cf.loc[cf['userId'] == userId]
 
     action_lover = [tuple(l) for l in rows[['title', 'rating']].values.tolist()]
-    
+
+    out_tup = [i for i in action_lover if i[0] in user_ratings]
+
+    action_lover = out_tup
+
     print(action_lover)
     def get_similar_movies(movie_name, user_rating):
         similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
