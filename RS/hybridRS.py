@@ -3,6 +3,7 @@ import numpy as np
 from time import sleep
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.model_selection import train_test_split
 
 ###### helper functions. Use them when needed #######
 def get_title_from_index(index):
@@ -147,6 +148,17 @@ def colaborative_based():
     print(similar_movies.sum().sort_values(ascending=False).head(10))
     return True
 
+def mse():
+    train, test = train_test_split(cf, test_size=0.2, random_state=42)
+    def combine_features(row):
+        try:
+            return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
+        except:
+            print( "Error:" , row)
+    
+    train["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
+    test["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
+
 def logout():
     print('logout')
     return True
@@ -157,6 +169,10 @@ def close():
 #Read CSV File
 df = pd.read_csv("tentaEste.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
+
+
+
+
 
 welcome()
 userId = login()
