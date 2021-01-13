@@ -85,13 +85,13 @@ def content_based():
     print('content_based')
     #Select Features
     features = ["keywords","cast","genres","director"] # Select features to take in acount
-    features_selected_int = features_menu()
-    features_selected_str = []
-    for f in features_selected_int:
-        features_selected_str.append(features[int(f)])
-    for feature in features_selected_str:
+    # features_selected_int = features_menu()
+    # features_selected_str = []
+    # for f in features_selected_int:
+    #     features_selected_str.append(features[int(f)])
+    for feature in features:
         df[feature] = df[feature].fillna('') #fills NaN with ''
-    return True
+        return True
 
 def movie_likes():
     print('movies_likes')
@@ -102,6 +102,7 @@ def movie_likes():
         except:
             print( "Error:" , row)
     
+    df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
     print("Combined features \n", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
