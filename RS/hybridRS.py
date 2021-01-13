@@ -135,7 +135,7 @@ def colaborative_based():
 
     action_lover = out_tup
 
-    print(action_lover)
+    
     def get_similar_movies(movie_name, user_rating):
         similar_score = item_similarity_df[movie_name]*(user_rating-2.5) #subtracts the rating by the mean in order to correct the low values
         similar_score = similar_score.sort_values(ascending=False)
