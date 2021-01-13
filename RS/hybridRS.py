@@ -85,9 +85,18 @@ def movie_likes():
     print("Cosine Similarity : \n")
     print(sim_scores)
     print("\n")
-    titles = cf['title'].tolist()
-    print(titles)
-    movie_user_likes = "Pulp Fiction"
+    titles = sorted(cf['title'].unique().tolist())
+    print('##########################################')
+    print('#        Select what film you like       #')
+    print('##########################################')
+    i = 0
+    for t in titles:
+        print('# ' + repr(i) + ' - ' + t)
+        i += 1
+    print('##########################################')
+
+    movie_user_likes_index = int(input('# Select the movie index:'))
+    movie_user_likes = titles[movie_user_likes_index]
     ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
     movie_director = get_director_from_title(movie_user_likes)
