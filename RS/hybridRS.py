@@ -136,10 +136,11 @@ def movie_likes():
 def colaborative_based():
     print('colaborative_based')
     user_ratings = cf.pivot_table(index=['userId'],columns=['title'], values='rating')
-    #Remove movies who have less than 20 users who rated it
+    #Remove movies who have less than 20 users who rated it | Fills NaN with 0
     user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
-    print(user_ratings.head())
+    #print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
+    #print(item_similarity_df)
     #TODO Change to user input
     # Lookup do user id
     # Guardar os dados do titulo e do rating num tuple
