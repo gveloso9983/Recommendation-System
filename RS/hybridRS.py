@@ -3,6 +3,7 @@ import numpy as np
 from time import sleep
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import mean_squared_error
 
 ###### helper functions. Use them when needed #######
 def get_title_from_index(index):
@@ -73,7 +74,7 @@ def movie_likes():
             print( "Error:" , row)
     
     df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
-
+    print(df["combined_features"].head())
     #print("Combined features \n ", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
@@ -106,6 +107,7 @@ def movie_likes():
     similar_movies = list(enumerate(sim_scores[movie_index]))
     ## Step 7: Get a list of similar movies in descending order of similarity score
     # Sort similar
+    print(sim_scores[movie_index])
     sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
     ## Step 8: Print titles of first 50 artists
     print("Recommended movies: \n")
@@ -157,6 +159,9 @@ def close():
 #Read CSV File
 df = pd.read_csv("tentaEste.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
+
+ratings_train = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
+ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
 
 welcome()
 userId = login()
