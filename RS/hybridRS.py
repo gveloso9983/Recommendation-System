@@ -81,21 +81,24 @@ def top10():
     return True
 
 #Content Based Filltering
-def content_based():
-    print('content_based')
+# def content_based():
+#     print('content_based')
     #Select Features
-    features = ["keywords","cast","genres","director"] # Select features to take in acount
+    
     # features_selected_int = features_menu()
     # features_selected_str = []
     # for f in features_selected_int:
     #     features_selected_str.append(features[int(f)])
-    for feature in features:
-        df[feature] = df[feature].fillna('') #fills NaN with ''
-        return True
+    
 
 def movie_likes():
     print('movies_likes')
+    features = ["keywords","cast","genres","director"] # Select features to take in acount
     
+    for feature in features:
+        df[feature] = df[feature].fillna('') #fills NaN with ''
+    
+
     def combine_features(row):
         try:
             return row["keywords"] + " " + row["cast"] + " " + row["genres"] + " " + row["director"]
