@@ -84,7 +84,6 @@ def movie_likes():
             print( "Error:" , row)
     
     df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
-    print(df["combined_features"].head())
     #print("Combined features \n ", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
@@ -189,6 +188,8 @@ def rmse():
     predict = count_matrix_test.dot(sim_scores_test) / np.array([np.abs(sim_scores_test).sum(axis=1)])
     print(predict)
 
+
+
     rmse = mean_squared_error(sim_scores_train, predict)
     print(rmse)
     return True
@@ -197,8 +198,7 @@ def close():
     return False
 ##################################################
 
-#ratings_train = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
-#ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
+
 
 
 welcome()
