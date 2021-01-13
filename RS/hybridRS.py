@@ -94,7 +94,7 @@ def movie_likes():
     ## Step 6: Get id of this movie from its title
     movie_index = get_index_from_title(movie_user_likes)
     movie_director = get_director_from_title(movie_user_likes)
-    print("Because you like the director" + movie_director + " : \n")
+    print("Because you like the director " + movie_director + " : \n")
     # Find Similar movies
     # Converts matrix into a list and gives us inside a set of tuples
     similar_movies = list(enumerate(sim_scores[movie_index]))
