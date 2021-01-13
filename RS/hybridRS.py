@@ -45,29 +45,13 @@ def menu():
     print('##########################################')
     print('# 0 - Top 10 movies                      #')
     print('# 1 - Content based                      #') # recommendatin based on a movie
-    print('# 2 - Movies you like                    #') #n sei se e necessario
-    print('# 3 - Colaborative based                 #') # recommendation based on your likings
-    print('# 4 - Welcome                            #') # Adicionar rating
-    print('# 5 - Logout                             #')
-    print('# Other - Close                          #')
+    print('# 2 - Colaborative based                 #') # recommendation based on your likings
+    print('# 3 - Welcome                            #') # Adicionar rating
+    print('# 4 - Logout                             #')
+    print('# 5 - Close                          #')
     option = int(input('# Please select one option: '))
     print('\n \n')
     return option
-
-#Features menu
-def features_menu():
-    print('##########################################')
-    print('#                Features                #')
-    print('##########################################')
-    print('# 0 - Keywords                           #')
-    print('# 1 - Cast                               #')
-    print('# 2 - Genres                             #')
-    print('# 3 - Director                           #')
-    print('# Other - Close                          #')
-    option = input('# Please select the features you want (just type the numbers and Enter): ')
-    print('\n \n')
-    return option
-##################################################
 
 ###### APP functionalities #######
 #Create top10
@@ -80,18 +64,8 @@ def top10():
     sleep(5)
     return True
 
-#Content Based Filltering
-# def content_based():
-#     print('content_based')
-    #Select Features
-    
-    # features_selected_int = features_menu()
-    # features_selected_str = []
-    # for f in features_selected_int:
-    #     features_selected_str.append(features[int(f)])
-    
-
 def movie_likes():
+    
     print('movies_likes')
     features = ["keywords","cast","genres","director"] # Select features to take in acount
     
@@ -106,6 +80,7 @@ def movie_likes():
             print( "Error:" , row)
     
     df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
+
     print("Combined features \n", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
@@ -178,11 +153,10 @@ welcome()
 login()
 options = { 
     0: top10,
-    1: content_based,
-    2: movie_likes,
-    3: colaborative_based,
-    4: welcome,
-    5: logout,
+    1: movie_likes,
+    2: colaborative_based,
+    3: welcome,
+    4: logout,
 }
 flag = True
 while flag:
