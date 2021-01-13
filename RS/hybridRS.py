@@ -52,7 +52,7 @@ def menu():
     print('# 1 - Content based                      #')
     print('# 2 - Movies you like                    #')
     print('# 3 - Colaborative based                 #')
-    print('# 4 - Similarity Matrix                  #')
+    print('# 4 - Welcome                            #')
     print('# 5 - Logout                             #')
     print('# Other - Close                          #')
     option = int(input('# Please select one option: '))
@@ -121,12 +121,12 @@ def movie_likes():
     sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
     ## Step 8: Print titles of first 50 artists
     print("Recommended movies: \n")
-    i= 0
+    i = 0
     for movie in sorted_similar_movies:
-    	print (get_title_from_index(movie[0]))
+        print (get_title_from_index(movie[0]))
         i = i+1
         if i >10:
-	        break
+            break
     return True
 
 #Collaborative Based
@@ -137,7 +137,7 @@ def colaborative_based():
     user_ratings = user_ratings.dropna(thresh=20, axis=1).fillna(0)
     print(user_ratings.head())
     item_similarity_df = user_ratings.corr(method='pearson')
-    #Add user input
+    #TODO Change to user input
     action_lover = [("Up",4), ("Interstellar",4), ("Guardians of the Galaxy",3)]
     similar_movies = pd.DataFrame()
     for movie,rating in action_lover:
