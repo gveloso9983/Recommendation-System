@@ -3,16 +3,13 @@ import numpy as np
 from time import sleep
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-<<<<<<< HEAD
 from sklearn.model_selection import train_test_split
-=======
 from sklearn.metrics import mean_squared_error
 
 #Read CSV File
 #df = pd.read_csv("movies_and_ratings_small_dataset.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
 df = cf.drop_duplicates(subset = ["title"], keep = 'first', ignore_index = True)
->>>>>>> master
 
 ###### helper functions. Use them when needed #######
 def get_title_from_index(index):
@@ -54,8 +51,9 @@ def menu():
     print('# 0 - Top 10 movies                      #')
     print('# 1 - Content based                      #') # recommendatin based on a movie
     print('# 2 - Colaborative based                 #') # recommendation based on your likings
-    print('# 3 - Logout                             #')
-    print('# 4 - Close                              #')
+    print('# 3 - RMSE                               #') # rmse
+    print('# 4 - Logout                             #')
+    print('# 5 - Close                              #')
     option = int(input('# Please select one option: '))
     print('\n \n')
     return option
@@ -161,11 +159,13 @@ def colaborative_based():
     print(similar_movies.sum().sort_values(ascending=False).head(10))
     return True
 
-def mse():
-    train, test = train_test_split(cf, test_size=0.2, random_state=42)
+def rmse():
+    train, test = train_test_split(cf, test_size=0.3, random_state=42)
+
     features = ["keywords", "cast", "genres", "director"]
     for feature in features:
-        df[feature] = df[feature].fillna('')
+        train[feature] = train[feature].fillna('')
+        test[feature] = test[feature].fillna('')
     
     def combine_features(row):
         try:
@@ -173,19 +173,24 @@ def mse():
         except:
             print( "Error:" , row)
     
-    train["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
-    test["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
+    train["combined_features"] = train.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
+    test["combined_features"] = test.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
 
-     ##Step 4: Create count matrix from this new combined column
+    ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
     #counts the frequecy of the words
-    count_matrix = cv.fit_transform(df["combined_features"])
+    count_matrix_train = cv.fit_transform(train["combined_features"])
+    count_matrix_test = cv.transform(test["combined_features"])
     ##Step 5: Compute the Cosine Similarity based on the count_matrix
     #calculates similarity between points
-    sim_scores = cosine_similarity(count_matrix)
+    sim_scores_train = cosine_similarity(count_matrix_train)
+    sim_scores_test = cosine_similarity(count_matrix_test)
 
-def logout():
-    print('logout')
+    predict = count_matrix_test.dot(sim_scores_test) / np.array([np.abs(sim_scores_test).sum(axis=1)])
+    print(predict)
+
+    rmse = mean_squared_error(sim_scores_train, predict)
+    print(rmse)
     return True
 
 def close():
@@ -196,21 +201,18 @@ def close():
 #ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
 
 
-
-
-
 welcome()
 userId = login()
 options = { 
     0: top10,
     1: movie_likes,
     2: colaborative_based,
-    3: logout,
+    3: rmse,
 }
 flag = True
 while flag:
     option = menu()
-    if option == 3:
+    if option == 4:
         userId = login()
     else:
         func = options.get(option, close)
