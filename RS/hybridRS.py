@@ -84,7 +84,6 @@ def movie_likes():
             print( "Error:" , row)
     
     df["combined_features"]= df.apply(combine_features, axis = 1) #axis=1 passes as rows and not columns
-    print(df["combined_features"].head())
     #print("Combined features \n ", df["combined_features"].head())
     ##Step 4: Create count matrix from this new combined column
     cv = CountVectorizer()
