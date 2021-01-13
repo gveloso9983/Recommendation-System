@@ -11,6 +11,8 @@ def get_title_from_index(index):
 def get_index_from_title(title):
 	return df[df.title == title]["index"].values[0]
 
+def get_director_from_title(title):
+	return df[df.title == title]["director"].values[0
 ##################################################
 
 ###### Interface functions #######
@@ -136,7 +138,7 @@ def colaborative_based():
     item_similarity_df = user_ratings.corr(method='pearson')
     #TODO Change to user input
     # Lookup do user id
-    rows = cf.loc['title', cf['userId'] == userId]
+    rows = cf.loc[cf['userId'] == userId]
     print('######################## USER ID ROWS ')
     print(userId)
     print(rows)
