@@ -188,6 +188,8 @@ def rmse():
     predict = count_matrix_test.dot(sim_scores_test) / np.array([np.abs(sim_scores_test).sum(axis=1)])
     print(predict)
 
+
+
     rmse = mean_squared_error(sim_scores_train, predict)
     print(rmse)
     return True
@@ -196,8 +198,7 @@ def close():
     return False
 ##################################################
 
-#ratings_train = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
-#ratings_test = pd.read_csv('', sep='\t', names=r_cols, encoding='latin-1')
+
 
 
 welcome()
