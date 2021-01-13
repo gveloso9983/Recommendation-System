@@ -7,7 +7,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 #Read CSV File
-#df = pd.read_csv("movies_and_ratings_small_dataset.csv")
 cf = pd.read_csv("movies_and_ratings_small_dataset.csv")
 df = cf.drop_duplicates(subset = ["title"], keep = 'first', ignore_index = True)
 
@@ -39,9 +38,9 @@ def login():
     print('##########################################')
     print('#                  Login                 #')
     print('##########################################')
-    id = int(input('# Insert an userId please: '))
+    ids = int(input('# Insert an userId please: '))
     print('\n \n')
-    return id
+    return ids
 
 #Menu
 def menu():
@@ -50,7 +49,7 @@ def menu():
     print('##########################################')
     print('# 0 - Top 10 movies                      #')
     print('# 1 - Content based                      #') # recommendatin based on a movie
-    print('# 2 - Colaborative based                 #') # recommendation based on your likings
+    print('# 2 - Colaborative filtering             #') # recommendation based on your likings
     print('# 3 - RMSE                               #') # rmse
     print('# 4 - Logout                             #')
     print('# 5 - Close                              #')
@@ -116,9 +115,9 @@ def movie_likes():
     similar_movies = list(enumerate(sim_scores[movie_index]))
     ## Step 7: Get a list of similar movies in descending order of similarity score
     # Sort similar
-    print(sim_scores[movie_index])
+    #print(sim_scores[movie_index])
     sorted_similar_movies = sorted(similar_movies, key=lambda x:x[1], reverse=True) #Key = decide the order, sort by x of 1 (Cosine Similarity), reverse= True gives us descending order
-    ## Step 8: Print titles of first 50 artists
+    ## Step 8: Print titles of first 10 movies
     print("Recommended movies: \n")
     i = 0
     for movie in sorted_similar_movies:
